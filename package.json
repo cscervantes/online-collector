@@ -1,0 +1,18 @@
+{
+  "name": "online-collector",
+  "version": "1.0.0",
+  "description": "collector",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "cscervantes",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^2.6.2",
+    "cheerio": "^1.0.0-rc.3",
+    "moment": "^2.24.0",
+    "request": "^2.88.0",
+    "string": "^3.3.3"
+  }
+}
