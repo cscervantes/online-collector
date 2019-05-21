@@ -2,9 +2,14 @@ var request = require('request')
 var cheerio = require('cheerio')
 var S       = require('string')
 var async   = require('async')
+var _       = require('lodash')
 
 var fetchDomain = function(url, cb){
     request.get(url, cb)
+}
+
+var updateMainSections = function(url, sections, cb){
+    request.put(url, sections, cb)
 }
 
 var removeSocialMedia = function(urls){
@@ -56,7 +61,7 @@ exports.addSection = function(data, cb){
                     var cleanUrls = cleanUrl(data.website_url, rmMedia)
                     var needEndSlash = needSlash(data.needs_endslash, cleanUrls)
                     var uniqueUrls = Array.from(new Set(needEndSlash))
-                    return cb(null, uniqueUrls)
+                    return cb(null, _.union(data.main_sections.concat(uniqueUrls)))
                 }
             })
         }, function(filterUrls, cb){
@@ -64,37 +69,37 @@ exports.addSection = function(data, cb){
 
             var filteredSections = filterUrls
 
-            var startWith = data.section_config.startsWith
+            var startWith = data.main_section_config.startsWith
             var toStrstartWith = startWith.map(function(v){
                 return '!f.includes(\''+v+'\')'
             })
 
-            var endWith = data.section_config.endsWith
+            var endWith = data.main_section_config.endsWith
             var toStrendWith = endWith.map(function(v){
                 return '!f.includes(\''+v+'\')'
             })
 
-            var containWith = data.section_config.containsWith
+            var containWith = data.main_section_config.containsWith
             var toStrcontainWith = containWith.map(function(v){
                 return '!f.includes(\''+v+'\')'
             })
 
-            var exactWith = data.section_config.exact
+            var exactWith = data.main_section_config.exact
             var toStrexactWith = exactWith.map(function(v){
                 return '!f.includes(\''+v+'\')'
             })
 
-            var acceptWith = data.section_config.accept_only
+            var acceptWith = data.main_section_config.accept_only
             var toStracceptWith = acceptWith.map(function(v){
                 return 'f.includes(\''+v+'\')'
             })
 
-            var regexInclude = data.section_config.regex_include
+            var regexInclude = data.main_section_config.regex_include
             var toStrregexInclude = regexInclude.map(function(v){
                 return 'f.search('+v+') != -1'
             })
 
-            var regexExclude = data.section_config.regex_exclude
+            var regexExclude = data.main_section_config.regex_exclude
             var toStrregexExclude = regexExclude.map(function(v){
                 return 'f.search('+v+') == -1'
             })
@@ -141,8 +146,20 @@ exports.addSection = function(data, cb){
                     return eval(toStrregexExclude.join(' && '))
                 })
             }
-
             return cb(null, filteredSections)
+        }, function(sections, cb){
+            if(process.env.NODE_ENV === 'production'){
+                var update_uri = 'http://localhost:4000/websites/update/'+data._id
+                updateMainSections(update_uri, {json:{main_sections:sections, date_updated: new Date()}}, function(error, response, body){
+                    if(error){
+                        return cb(null, error)
+                    }else{
+                        return cb(null, body)
+                    }
+                })
+            }else{
+                return cb(null, sections)
+            }                
         }
     ], function(err, result){
         if(err){
@@ -152,4 +169,8 @@ exports.addSection = function(data, cb){
             return cb(null, result)
         }
     })
+}
+
+exports.addSubSection = function(data, cb){
+
 }
