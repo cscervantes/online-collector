@@ -334,7 +334,7 @@ exports.addSubSection = function(data, cb){
 exports.fetchSectionArticles = function(data, cb){
     console.log('ENVIRONMENT: '+process.env.NODE_ENV)
     var sections = Array.from(new Set(data.main_sections.concat(data.sub_sections))).sort()
-    sections = sections.splice(0, 2) //remove this later for testing only
+    // sections = sections.splice(0, 2) //remove this later for testing only
     if(sections.length > 0){
         console.log(`Using section urls(${sections.length}) of ${data.website_name}`)
         async.eachLimit(sections, 1, function(section, eCb){
@@ -442,18 +442,45 @@ exports.fetchSectionArticles = function(data, cb){
                         ], function(error, result){
                             if(error){
                                 console.log(error)
-                            }else{
-                                console.log(`Filtered article urls(${result.length})`)
-                                console.log(result)
                                 return eCb()
-                            }
-                            
-                        })
-                        
-                        // console.log(`Fetched articles from ${section} ${$('a').length}`)
-                        
-                    }
-                })
+                            }else{
+                                var articles = S(_.join(result)).splitLeft(',')
+                                articles = articles.map(function(v){
+                                    return !v.includes('Error:') && S(v).replaceAll('https://', 'http://').s
+                                })
+                                articles = _.uniq(articles)
+                                articles = articles.filter(Boolean)
+                                console.log(`Filtered article urls(${articles.length})`)
+                                if(process.env.NODE_ENV === 'production'){
+                                    async.eachLimit(articles, 10,  function(article_url, eCb2){
+                                        setTimeout(function(){
+                                            request.post('http://localhost:4000/articles/store', {json: {article_full_url: article_url}}, function(error, response, body){
+                                                if(error){
+                                                    console.log(error)
+                                                    return eCb2()
+                                                }else{
+                                                    console.log(body)
+                                                    return eCb2()
+                                                }
+                                            })
+                                        }, 500)
+                                    }, function(err){
+                                        if(err){
+                                            console.log(err)
+                                            return eCb()
+                                        }else{
+                                            console.log(`Done saving.`)
+                                            return eCb()
+                                        }
+                                    })
+                                }else{
+                                    console.log(result)
+                                    return eCb()
+                                }
+                            } // end of else condition
+                        }) // end of async  waterfall    
+                    } // end of else condition
+                }) // end of fetchDomain function
                 
             }, 1000)
         }, function(err){
