@@ -1,4 +1,4 @@
-var section = require('./section')
+var section = require('./helpers/section')
 var request = require('request')
 var async   = require('async')
 

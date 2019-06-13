@@ -1,17 +1,16 @@
-var selectors = require('./article')
+var selectors = require('./helpers/article')
 var fs = require('fs')
-var cheerio = require('cheerio')
-var S = require('string')
 var async = require('async')
 var request = require('request')
-var sample_selectors = fs.readFileSync('selectors.json', 'utf-8') 
+var sample_selectors = fs.readFileSync('selectors.json', 'utf-8') // this should be coming from mongodb
 var parseData = JSON.parse(sample_selectors)
 // console.log(selectors)
 // console.log(parseData)
 
 // var art_url = "https://lifestyle.inquirer.net/337743/watch-sophie-turner-admits-to-trying-her-best-to-flirt-with-matthew-perry/"
 // var art_url = 'https://newsinfo.inquirer.net/1128390/duterte-open-to-purchase-us-weapons-again'
-var art_url = 'https://lifestyle.inquirer.net/337421/what-do-russians-think-of-the-hbos-chernobyl/'
+// var art_url = 'https://lifestyle.inquirer.net/337421/what-do-russians-think-of-the-hbos-chernobyl/'
+var art_url = 'https://lifestyle.inquirer.net/337440/uber-helicopter-will-cost-you-200-in-new-york/'
 
 async.waterfall([
     function(cb){
