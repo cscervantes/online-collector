@@ -30,6 +30,7 @@ var cheerioWrapper = function(html, selectors){
             break;
         }
     }
+    console.log(selectors.selector)
     return entry
 }
 
@@ -64,7 +65,7 @@ exports.RawHtml = function(data, cb){
 
 exports.Title = function(data, cb){
     try{
-        return cb(null, cheerioWrapper(data.html, data.title))
+        return cb(null, {title:cheerioWrapper(data.html, data.title)})
     }catch(e){
         return cb(null, e)
     }
@@ -72,7 +73,7 @@ exports.Title = function(data, cb){
 
 exports.Content = function(data, cb){
     try{
-        return cb(null, cheerioWrapper(data.html, data.content))
+        return cb(null, {content:cheerioWrapper(data.html, data.content)})
     }catch(e){
         return cb(null, e)
     }
@@ -80,7 +81,8 @@ exports.Content = function(data, cb){
 
 exports.DatePublished = function(data, cb){
     try{
-        return cb(null, moment(new Date(cheerioWrapper(data.html, data.date_publish))).utcOffset(8).format('YYYY-MM-DD'))
+        console.log(cheerioWrapper(data.html, data.date_publish))
+        return cb(null, {date_publish:moment(new Date(cheerioWrapper(data.html, data.date_publish))).utcOffset(8).format('YYYY-MM-DD')})
     }catch(e){
         return cb(null, e)
     }
@@ -88,7 +90,7 @@ exports.DatePublished = function(data, cb){
 
 exports.Authors = function(data, cb){
     try{
-        return cb(null, cheerioWrapper(data.html, data.author))
+        return cb(null, {authors:cheerioWrapper(data.html, data.author)})
     }catch(e){
         return cb(null, e)
     }
@@ -96,7 +98,7 @@ exports.Authors = function(data, cb){
 
 exports.Sections = function(data, cb){
     try{
-        return cb(null, cheerioWrapper(data.html, data.section))
+        return cb(null, {sections:cheerioWrapper(data.html, data.section)})
     }catch(e){
         return cb(null, e)
     }
@@ -104,7 +106,7 @@ exports.Sections = function(data, cb){
 
 exports.Images = function(data, cb){
     try{
-        return cb(null, imgVidWrapper(data.html, data.image))
+        return cb(null, {images:imgVidWrapper(data.html, data.image)})
     }catch(e){
         return cb(null, e)
     }
@@ -112,7 +114,7 @@ exports.Images = function(data, cb){
 
 exports.Videos = function(data, cb){
     try{
-        return cb(null, imgVidWrapper(data.html, data.video))
+        return cb(null, {videos:imgVidWrapper(data.html, data.video)})
     }catch(e){
         return cb(null, e)
     }
