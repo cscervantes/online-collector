@@ -454,7 +454,7 @@ exports.fetchSectionArticles = function(data, cb){
                                 if(process.env.NODE_ENV === 'production'){
                                     async.eachLimit(articles, 10,  function(article_url, eCb2){
                                         setTimeout(function(){
-                                            request.post('http://localhost:4000/articles/store', {json: {article_full_url: article_url}}, function(error, response, body){
+                                            request.post('http://localhost:4000/articles/store', {json: {article_full_url: article_url, article_src_url:data.fqdn}}, function(error, response, body){
                                                 if(error){
                                                     console.log(error)
                                                     return eCb2()

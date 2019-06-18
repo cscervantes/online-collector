@@ -9,9 +9,10 @@ var parseData = JSON.parse(sample_selectors)
 
 // var art_url = "https://lifestyle.inquirer.net/337743/watch-sophie-turner-admits-to-trying-her-best-to-flirt-with-matthew-perry/"
 // var art_url = 'https://newsinfo.inquirer.net/1128390/duterte-open-to-purchase-us-weapons-again'
-var art_url = 'https://lifestyle.inquirer.net/337421/what-do-russians-think-of-the-hbos-chernobyl/'
+// var art_url = 'https://lifestyle.inquirer.net/337421/what-do-russians-think-of-the-hbos-chernobyl/'
 // var art_url = 'https://lifestyle.inquirer.net/337440/uber-helicopter-will-cost-you-200-in-new-york/'
-
+var art_url = 'https://lifestyle.inquirer.net/337417/meet-the-teen-climate-activist-who-just-won-an-amnesty-prize/'
+var art_url = 'https://newsinfo.inquirer.net/1130318/ncrpo-says-security-efforts-during-midterm-polls-in-metro-were-successful'
 async.waterfall([
     function(cb){
         request.get(art_url, function(error, response, body){
