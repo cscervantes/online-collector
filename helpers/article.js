@@ -30,7 +30,7 @@ var cheerioWrapper = function(html, selectors){
             break;
         }
     }
-    console.log(selectors.selector)
+    // console.log(selectors)
     return entry
 }
 
@@ -81,7 +81,7 @@ exports.Content = function(data, cb){
 
 exports.DatePublished = function(data, cb){
     try{
-        console.log(cheerioWrapper(data.html, data.date_publish))
+        // console.log(cheerioWrapper(data.html, data.date_publish))
         return cb(null, {date_publish:moment(new Date(cheerioWrapper(data.html, data.date_publish))).utcOffset(8).format('YYYY-MM-DD')})
     }catch(e){
         return cb(null, e)
