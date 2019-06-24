@@ -1,0 +1,122 @@
+{
+    "title":[
+        {
+            "selector": "h1.entry-title",
+            "attrib": null,
+            "ignore": [],
+            "replace": []
+        },
+        {
+            "selector": "title",
+            "attrib": null,
+            "ignore": [],
+            "replace": []
+        }
+    ],
+    "date_publish":[
+        {
+            "selector": "#m-pd2 > span:nth-child(2)",
+            "attrib": null,
+            "ignore": [],
+            "replace": [{
+                "find": "/ ",
+                "replace":""
+            }]
+        },
+        {
+            "selector": "script[type='application/ld+json']",
+            "attrib": null,
+            "ignore": ["a"],
+            "replace": [{
+                "find": "/ ",
+                "replace":""
+            }]
+        },
+        {
+            "selector": "#art_plat",
+            "attrib": null,
+            "ignore": ["a"],
+            "replace": [{
+                "find": "/ ",
+                "replace":""
+            }]
+        }
+    ],
+    "author":[
+        {
+            "selector": "#m-pd2 > span:nth-child(1)",
+            "attrib": null,
+            "ignore": [],
+            "replace": [{
+                "find": "By ",
+                "replace": ""
+            }]
+        },
+        {
+            "selector": "#art_author > span > a",
+            "attrib": null,
+            "ignore": [],
+            "replace": []
+        },
+        {
+            "selector": ".byline a[rel=tag]",
+            "attrib": null,
+            "ignore": [],
+            "replace": []
+        }
+    ],
+    "section":[
+        {
+            "selector": "div[id^=art_bc_] > a",
+            "attrib": null,
+            "ignore": [],
+            "replace": []
+        },
+        {
+            "selector": "#m-bread2 > a",
+            "attrib": null,
+            "ignore": [],
+            "replace": []
+        }
+    ],
+    "image":[
+        {
+            "selector": ".hero img",
+            "attrib": "data-cfsrc",
+            "ignore": [],
+            "replace": []
+        }
+    ],
+    "video":[
+        {
+            "selector": "#primary.content-area iframe",
+            "attrib": "src",
+            "ignore": [],
+            "replace": []
+        }
+    ],
+    "content":[
+        {
+            "selector": ".entry-content",
+            "attrib": null,
+            "ignore": [],
+            "replace": []
+        },
+        {
+            "selector": "#article_content",
+            "attrib": null,
+            "ignore": ["script", "style", "#billboard_article", "#article-new-featured", 
+                "p:contains(READ:)", "#rn-lbl", "div[id^=read-next]", ".-ob-div", "#article_tags", "#article_disclaimer", "#lsmr-lbl", "#lsmr-wrap", "#follow-this", 
+                "#ch-follow-us", "a[href=#article_comment_box]", "p[style='color:#989898;font-size:14px;']"],
+            "replace": []
+        },
+        {
+            "selector": "#article-content",
+            "attrib": null,
+            "ignore": ["script", "style", "#billboard_article", "#article-new-featured", 
+                "p:contains(READ:)", "#rn-lbl", "div[id^=read-next]", ".-ob-div", "#article_tags", "#article_disclaimer", "#lsmr-lbl", "#lsmr-wrap", "#follow-this", 
+                "#ch-follow-us", "a[href=#article_comment_box]", "p[style='color:#989898;font-size:14px;']"],
+            "replace": []
+        }
+    ]
+}
