@@ -1,0 +1,35 @@
+{
+    "startsWith": [
+        "google.com",
+        "gmail.com",
+        "facebook.com",
+        "yahoo.com",
+        "twitter.com",
+        "instagram.com"
+    ],
+    "endsWith": [
+        "/contact-us",
+        "/about-us",
+        "/advertise"
+    ],
+    "containsWith": [
+        "google.com", "/subscribe", "/donate",
+        "gmail.com",
+        "facebook.com",
+        "yahoo.com",
+        "twitter.com",
+        "instagram.com",
+        "/advertise",
+        "/about",
+        "/contact",
+        "/feed",
+        "#",
+        "?option="
+    ],
+    "exact": [],
+    "accept_only": [],
+    "regex_include": [],
+    "regex_exclude": [
+        "/([0-9]+)/g"
+    ]
+}
