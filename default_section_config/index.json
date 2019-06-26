@@ -8,20 +8,21 @@
         "instagram.com"
     ],
     "endsWith": [
-        "/contact-us",
-        "/about-us",
-        "/advertise"
+        "/contact-us", ".jpg", ".png", ".mp4", ".mp3",
+        "/about-us", ".jpeg", ".css", ".js",
+        "/advertise", "/submit", "/login",
+        "/term", "/privacy", "/contact", "/download"
     ],
     "containsWith": [
-        "google.com", "/subscribe", "/donate",
-        "gmail.com",
-        "facebook.com",
-        "yahoo.com",
-        "twitter.com",
-        "instagram.com",
-        "/advertise",
-        "/about",
-        "/contact",
+        "google.com", "/subscribe", "/donate", "post=",
+        "gmail.com", "/privacy", "/wp-content/",
+        "facebook.com", "/wp-login", "/register",
+        "yahoo.com", "/sitemap", "login.php", "/components/",
+        "twitter.com", "/disclaimer", "/banners/", "url=", "uri=1",
+        "instagram.com", "/rss", "=rss",
+        "/advertise", "?format=", "/dmca-policy", "/frontend-submission",
+        "/about", "/add_to/", "login.", "pinterest.com",
+        "/contact", "reddit.com", "yummly.com", "article",
         "/feed",
         "#",
         "?option="
@@ -30,6 +31,7 @@
     "accept_only": [],
     "regex_include": [],
     "regex_exclude": [
-        "/([0-9]+)/g"
+        "/\\/(\\d+)-/g", "/\\/(\\d){4}\\/(\\d){2}/g", "/\\/(\\d){4}/g",
+        "/(\\w+)-(\\w+)-(\\w+)/g", "/\\/(\\d){2}\\/(\\d){2}/g"
     ]
 }

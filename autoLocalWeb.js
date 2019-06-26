@@ -21,7 +21,7 @@ async.waterfall([
             }
         })
     }, function(result, cb){
-        async.eachLimit(result.splice(31), 1, function(d, eCb){
+        async.eachLimit(result.splice(0, 1), 2, function(d, eCb){
             setTimeout(function(){
                 d.main_section_config = JSON.parse(_config)
                 d.website_url = d.home_url
@@ -30,8 +30,16 @@ async.waterfall([
                 delete d.home_url
                 delete d.section_urls
                 // console.log(d)
-                _section.addSection(d, eCb)
-                // return eCb()
+                _section.automateLocalSection(d, function(err, data){
+                    if(err){
+                        console.log(err)
+                        return eCb()
+                    }else{
+                        console.log(data)
+                        return eCb()
+                    }
+                })
+                
             }, 1000)
         }, function(err){
             if(err){
