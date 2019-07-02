@@ -3,6 +3,7 @@ var cheerio = require('cheerio')
 var S       = require('string')
 var async   = require('async')
 var _       = require('lodash')
+var url_parse = require('url')
 
 var fetchDomain = function(url, cb){
     request.get(url, cb)
@@ -644,3 +645,155 @@ exports.automateLocalSection = function(data, eCb){
         }
     })
 }
+
+exports.automateSection = function(data, eCb){
+    console.log('ENVIRONMENT: '+process.env.NODE_ENV)
+    console.log('Production: '+data.prod)
+    async.waterfall([
+        function(cb){
+            var section_urls = []
+            fetchDomain(data.website_url, function(error, response, body){
+                if(error){
+                    console.log(`Error Crawling ${data.website_url} ${error}`)
+                    return cb(error)
+                }else{
+                    console.log(`Crawling website ${data.website_url}`)
+                    var $ = cheerio.load(body)
+                    $('a').each(function(i, e){
+                        section_urls.push($(e).attr('href'))
+                    })
+                    var rmMedia = removeSocialMedia(section_urls)
+                    var cleanUrls = cleanUrl(data.website_url, rmMedia)
+                    var needEndSlash = needSlash(data.needs_endslash, cleanUrls)
+                    // var uniqueUrls = Array.from(new Set(needEndSlash))
+                    var uniqueUrls = _.uniq(needEndSlash).sort()
+                    // return cb(null, _.union(data.main_sections.concat(uniqueUrls)))
+                    return cb(null, uniqueUrls)
+                    // return cb(null, _.union(uniqueUrls))
+                }
+            })
+        }, function(filterUrls, cb){
+            // console.log(data.section_config)
+
+            var filteredSections = filterUrls
+
+            var startWith = data.main_section_config.startsWith
+            var toStrstartWith = startWith.map(function(v){
+                return '!f.includes(\''+v+'\')'
+            })
+
+            var endWith = data.main_section_config.endsWith
+            var toStrendWith = endWith.map(function(v){
+                return '!f.includes(\''+v+'\')'
+            })
+
+            var containWith = data.main_section_config.containsWith
+            var toStrcontainWith = containWith.map(function(v){
+                return '!f.includes(\''+v+'\')'
+            })
+
+            var exactWith = data.main_section_config.exact
+            var toStrexactWith = exactWith.map(function(v){
+                return '!f.includes(\''+v+'\')'
+            })
+
+            var acceptWith = data.main_section_config.accept_only
+            var toStracceptWith = acceptWith.map(function(v){
+                return 'f.includes(\''+v+'\')'
+            })
+
+            var regexInclude = data.main_section_config.regex_include
+            var toStrregexInclude = regexInclude.map(function(v){
+                return 'f.search('+v+') != -1'
+            })
+
+            var regexExclude = data.main_section_config.regex_exclude
+            var toStrregexExclude = regexExclude.map(function(v){
+                return 'f.search('+v+') == -1'
+            })
+
+
+            if(startWith.length > 0){
+                var filteredSections = filteredSections.filter(function(f){
+                    return eval(toStrstartWith.join(' && '))
+                })
+            }
+                
+            if(endWith.length > 0){
+                var filteredSections = filteredSections.filter(function(f){
+                    return eval(toStrendWith.join(' && '))
+                })
+            }
+
+            if(containWith.length > 0){
+                var filteredSections = filteredSections.filter(function(f){
+                    return eval(toStrcontainWith.join(' && '))
+                })
+            }
+
+            if(exactWith.length > 0){
+                var filteredSections = filteredSections.filter(function(f){
+                    return eval(toStrexactWith.join(' && '))
+                })
+            }
+
+            if(acceptWith.length > 0){
+                var filteredSections = filteredSections.filter(function(f){
+                    return eval(toStracceptWith.join(' && '))
+                })
+            }
+
+            if(regexInclude.length > 0){
+                var filteredSections = filteredSections.filter(function(f){
+                    return eval(toStrregexInclude.join(' && '))
+                })
+            }
+
+            if(regexExclude.length > 0){
+                var filteredSections = filteredSections.filter(function(f){
+                    return eval(toStrregexExclude.join(' && '))
+                })
+            }
+            return cb(null, filteredSections.sort())
+        }, function(sections, cb){
+            var websiteContainOnly = S(data.fqdn).replaceAll('www.', '').s
+            var sections = _.union(data.main_sections.concat(sections))
+            var sections = sections.map(function(v){
+                return S(v).replaceAll('https://', 'http://').s
+            })
+            var sections = sections.filter(function(v){
+                return S(v).contains(websiteContainOnly)
+            })
+            var sections = sections.map(function(v){
+                if(data.needs_endslash){
+                    return S(v).ensureRight('/').s
+                }else{
+                    return S(v).chompRight('/').s
+                }
+            })
+            var sections = _.uniq(sections).sort()
+            // if(process.env.NODE_ENV === 'production'){
+            //     var update_uri = 'http://192.168.3.250:4000/v0/websites/update/'+data._id
+            //     updateMainSections(update_uri, {json:{section_urls:sections}}, function(error, response, body){
+            //         if(error){
+            //             return cb(error)
+            //         }else{
+            //             return cb(null, body)
+            //         }
+            //     })
+            // }else{
+            //     return cb(null, sections)
+            // }
+            return cb(null, sections)                
+        }
+    ], function(err, result){
+        if(err){
+            // console.log(err)
+            return eCb(err)
+        }else{
+            // console.log(result)
+            return eCb(result)
+        }
+    })
+}
+
