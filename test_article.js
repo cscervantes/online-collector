@@ -1,46 +1,42 @@
+var async = require('async')
+var request = require('request')
 
-
-// async.waterfall([
-//     function(cb){
-//         request.get(art_url, function(error, response, body){
-//             if(error){
-//                 return cb(null, error)
-//             }else{
-//                 parseData.html = body
-//                 async.parallel([
-//                     function(cb){
-//                         selectors.Title(parseData, cb)
-//                     }, function(cb){
-//                         selectors.Authors(parseData, cb)
-//                     }, function(cb){
-//                         selectors.DatePublished(parseData, cb)
-//                     }, function(cb){
-//                         selectors.Sections(parseData, cb)
-//                     }, function(cb){
-//                         selectors.Content(parseData, cb)
-//                     }, function(cb){
-//                         selectors.Images(parseData, cb)
-//                     }, function(cb){
-//                         selectors.Videos(parseData, cb)
-//                     }
-//                 ], function(err, result){
-//                     if(err){
-//                         return cb(null, err)
-//                     }else{
-//                         return cb(null, result)
-//                     }
-//                 })
-//             }
-//         })
-//     }
-// ], function(err, result){
-//     if(err) throw err;
-    
-//     var resultObj = result.reduce(function(result, item){
-//         var key = Object.keys(item)[0]
-//         result[key] = item[key]
-//         return result
-//     }, {})
-//     resultObj.article_full_url = art_url
-//     console.log(resultObj)
-// })
+var articleHelper = require('./helpers/article_helper')
+var article = 'http://daytripped-running.blogspot.com/2019/06/race-review-sunriser-run-10k.html'
+// console.log(articleHelper.BlogSpot.getTitle())
+// console.log(articleHelper.BlogSpot.getDate())
+// console.log(articleHelper.BlogSpot.getAuthors())
+// console.log(articleHelper.BlogSpot.getSections())
+// console.log(articleHelper.BlogSpot.getContent())
+var jsonData = {}
+async.waterfall([
+    function(cb){
+        request.get(article, function(error, response, body){
+            if(error){
+                return cb(error)
+            }else{
+                jsonData.html = body
+                jsonData.selectors = {
+                    title_selectors: 'h3.entry-title',
+                    date_publish_selectors: '.date-header > span',
+                    author_selectors: '.g-profile > span',
+                    content_selectors: '.entry-content',
+                    section_selectors: 'Blogs'
+                }
+                return cb(null, jsonData)
+            }
+        })
+    }, function(html, cb){
+        var jsonBody = {}
+        var raw = new articleHelper.BlogSpot(html)
+        jsonBody.title = raw.getTitle()
+        jsonBody.date_publish = raw.getDate()
+        jsonBody.authors = raw.getAuthors()
+        jsonBody.sections = raw.getSections()
+        jsonBody.content = raw.getContent()
+        return cb(null, jsonBody)
+    }
+], function(error, result){
+    if(error) throw error;
+    console.log(result)
+})
